@@ -21,13 +21,26 @@ function updateTabSizes() {
   
   if (tabCount === 0) return;
   
-  // Chrome behavior: max 240px per tab, min 48px
-  // Calculate available width (account for new tab button ~40px and margins)
-  const containerWidth = tabsContainer.offsetWidth;
-  const availableWidth = containerWidth - 20; // Account for margins
+  // Chrome behavior: calculate available width for tabs
+  // Account for traffic lights, new tab button, and margins
+  const tabBarWidth = document.querySelector('.tabs-wrapper').offsetWidth;
+  const newTabBtnWidth = 40; // Width of + button
+  const availableWidth = tabBarWidth - newTabBtnWidth - 10; // Small margin
   
+  // Calculate tab width (max 240px, min 48px)
   let tabWidth = Math.floor(availableWidth / tabCount);
   tabWidth = Math.max(48, Math.min(240, tabWidth));
+  
+  // Check if tabs need to shrink or if + button can follow
+  const totalTabWidth = tabWidth * tabCount;
+  
+  if (totalTabWidth < availableWidth) {
+    // Tabs fit comfortably, + button follows
+    tabsContainer.style.flex = '0 0 auto';
+  } else {
+    // Tabs fill space, + button stays at edge
+    tabsContainer.style.flex = '1 1 auto';
+  }
   
   tabElements.forEach(tab => {
     tab.style.width = `${tabWidth}px`;
